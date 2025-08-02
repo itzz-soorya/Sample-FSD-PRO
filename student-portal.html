@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Volunteer Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h2>🎓 College VMS</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="student-portal.html" class="active">Student Portal</a></li>
+                    <li><a href="login.html">Admin Login</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Student Login Section -->
+    <section class="student-section" id="studentLoginSection">
+        <div class="container">
+            <div class="student-login-container">
+                <div class="student-login-form">
+                    <h2>Student Portal</h2>
+                    <p>Enter your email to check your volunteer application status</p>
+                    <form id="studentLoginForm">
+                        <div class="form-group">
+                            <label for="studentEmail">Email Address</label>
+                            <input type="email" id="studentEmail" name="studentEmail" required placeholder="Enter your college email">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Check My Applications</button>
+                    </form>
+                </div>
+                <div class="student-illustration">
+                    <div class="illustration-content">
+                        <h3>Track Your Applications</h3>
+                        <p>Stay updated on your volunteer application status and get notifications about selections.</p>
+                        <ul>
+                            <li>✅ View all your applications</li>
+                            <li>✅ Check approval status</li>
+                            <li>✅ Get event notifications</li>
+                            <li>✅ See upcoming volunteer duties</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Student Dashboard Section -->
+    <section class="student-dashboard" id="studentDashboard" style="display: none;">
+        <div class="container">
+            <!-- Student Info Header -->
+            <div class="student-header">
+                <div class="student-info">
+                    <h1>Welcome, <span id="studentName">Student</span>!</h1>
+                    <p>Email: <span id="displayEmail"></span></p>
+                </div>
+                <div class="student-actions">
+                    <button class="btn btn-secondary" onclick="refreshStudentData()">🔄 Refresh</button>
+                    <button class="btn btn-danger" onclick="logoutStudent()">🚪 Logout</button>
+                </div>
+            </div>
+
+            <!-- Student Statistics -->
+            <div class="student-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-content">
+                        <h3 id="studentTotalApplications">0</h3>
+                        <p>Total Applications</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <h3 id="studentPendingApplications">0</h3>
+                        <p>Pending Review</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <h3 id="studentApprovedApplications">0</h3>
+                        <p>Approved</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎉</div>
+                    <div class="stat-content">
+                        <h3 id="studentUpcomingEvents">0</h3>
+                        <p>Upcoming Events</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Notifications -->
+            <div class="student-notifications" id="studentNotificationsSection">
+                <h2>📢 Recent Notifications</h2>
+                <div class="notifications-container" id="studentNotificationsContainer">
+                    <!-- Notifications will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Student Applications -->
+            <div class="student-applications">
+                <h2>📝 My Applications</h2>
+                <div class="applications-container" id="studentApplicationsContainer">
+                    <!-- Applications will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Approved Events -->
+            <div class="approved-events" id="approvedEventsSection" style="display: none;">
+                <h2>🎯 My Volunteer Events</h2>
+                <div class="approved-events-grid" id="approvedEventsGrid">
+                    <!-- Approved events will be loaded here -->
+                </div>
+            </div>
+
+            <!-- No Data Message -->
+            <div class="no-data" id="noStudentDataMessage" style="display: none;">
+                <div class="no-data-icon">📝</div>
+                <h3>No Applications Found</h3>
+                <p>You haven't applied for any volunteer positions yet.</p>
+                <a href="events.html" class="btn btn-primary">Browse Events</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notifications -->
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
+        <button onclick="closeNotification()">&times;</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Information</h3>
+                    <p>📧 Email: volunteer@college.edu</p>
+                    <p>📞 Phone: +1 (555) 123-4567</p>
+                    <p>📍 Address: 123 College Street, Education City</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="student-portal.html">Student Portal</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <p>Stay connected with our college community</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 College Volunteer Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

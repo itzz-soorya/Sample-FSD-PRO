@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Volunteer Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h2>🎓 College VMS</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="student-portal.html">Student Portal</a></li>
+                    <li><a href="login.html">Admin Login</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Panel Content -->
+    <section class="admin-section">
+        <div class="container">
+            <div class="admin-header">
+                <h1>Admin Dashboard</h1>
+                <div class="admin-actions">
+                    <button class="btn btn-primary" onclick="openAddEventModal()">📝 Add Event</button>
+                    <button class="btn btn-secondary" onclick="refreshApplications()">🔄 Refresh</button>
+                    <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-content">
+                        <h3 id="totalApplications">0</h3>
+                        <p>Total Applications</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <h3 id="pendingApplications">0</h3>
+                        <p>Pending Review</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <h3 id="approvedApplications">0</h3>
+                        <p>Approved</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-content">
+                        <h3 id="rejectedApplications">0</h3>
+                        <p>Rejected</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Management Section -->
+            <div class="admin-table-container">
+                <h2>Events Management</h2>
+                <div class="events-admin-grid" id="eventsAdminGrid">
+                    <!-- Events will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Applications Table -->
+            <div class="admin-table-container">
+                <h2>Volunteer Applications</h2>
+                <div class="table-responsive">
+                    <table class="admin-table" id="applicationsTable">
+                        <thead>
+                            <tr>
+                                <th>Application ID</th>
+                                <th>Name</th>
+                                <th>Roll No</th>
+                                <th>Department</th>
+                                <th>Email</th>
+                                <th>Event</th>
+                                <th>Status</th>
+                                <th>Applied Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsTableBody">
+                            <!-- Applications will be dynamically loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- No Applications Message -->
+            <div class="no-data" id="noApplicationsMessage" style="display: none;">
+                <div class="no-data-icon">📝</div>
+                <h3>No Applications Yet</h3>
+                <p>When students apply for volunteer positions, they will appear here.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Event Modal -->
+    <div class="modal" id="addEventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Event</h2>
+                <span class="close" onclick="closeAddEventModal()">&times;</span>
+            </div>
+            <form id="addEventForm" class="volunteer-form">
+                <div class="form-group">
+                    <label for="eventName">Event Name *</label>
+                    <input type="text" id="eventName" name="eventName" required placeholder="Enter event name">
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">Event Date *</label>
+                    <input type="date" id="eventDate" name="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventTime">Event Time *</label>
+                    <input type="text" id="eventTime" name="eventTime" required placeholder="e.g., 09:00 AM - 06:00 PM">
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Event Description *</label>
+                    <textarea id="eventDescription" name="eventDescription" rows="4" required placeholder="Describe the event and volunteer requirements"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="eventCategory">Category *</label>
+                    <select id="eventCategory" name="eventCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Career">Career</option>
+                        <option value="Environment">Environment</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Social">Social</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="volunteersNeeded">Volunteers Needed *</label>
+                    <input type="number" id="volunteersNeeded" name="volunteersNeeded" required min="1" placeholder="Number of volunteers required">
+                </div>
+                <div class="form-group">
+                    <label for="eventStatus">Event Status</label>
+                    <select id="eventStatus" name="eventStatus">
+                        <option value="true">Upcoming (Active)</option>
+                        <option value="false">Completed/Inactive</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddEventModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application Details Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Application Details</h2>
+                <span class="close" onclick="closeApplicationModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="applicationDetails">
+                <!-- Application details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
+        <button onclick="closeNotification()">&times;</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Information</h3>
+                    <p>📧 Email: volunteer@college.edu</p>
+                    <p>📞 Phone: +1 (555) 123-4567</p>
+                    <p>📍 Address: 123 College Street, Education City</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="student-portal.html">Student Portal</a></li>
+                        <li><a href="login.html">Admin Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <p>Stay connected with our college community</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 College Volunteer Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

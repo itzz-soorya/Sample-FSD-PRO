@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Volunteer Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h2>🎓 College VMS</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="events.html" class="active">Events</a></li>
+                    <li><a href="student-portal.html">Student Portal</a></li>
+                    <li><a href="login.html">Admin Login</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>All Events</h1>
+            <p>Browse and volunteer for college events</p>
+        </div>
+    </section>
+
+    <!-- Events Grid -->
+    <section class="events-section">
+        <div class="container">
+            <div class="events-grid" id="allEventsGrid">
+                <!-- Events will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Volunteer Application Modal -->
+    <div class="modal" id="volunteerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Volunteer Application</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="volunteerForm" class="volunteer-form">
+                <input type="hidden" id="eventId" name="eventId">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="rollNo">Roll Number *</label>
+                    <input type="text" id="rollNo" name="rollNo" required>
+                </div>
+                <div class="form-group">
+                    <label for="department">Department *</label>
+                    <select id="department" name="department" required>
+                        <option value="">Select Department</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Business Administration">Business Administration</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="skills">Skills & Experience</label>
+                    <textarea id="skills" name="skills" rows="3" placeholder="Describe your relevant skills and experience"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="availability">Availability *</label>
+                    <select id="availability" name="availability" required>
+                        <option value="">Select Availability</option>
+                        <option value="Full Day">Full Day</option>
+                        <option value="Morning Only">Morning Only</option>
+                        <option value="Afternoon Only">Afternoon Only</option>
+                        <option value="Evening Only">Evening Only</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="motivation">Why do you want to volunteer?</label>
+                    <textarea id="motivation" name="motivation" rows="3" placeholder="Tell us why you're interested in volunteering for this event"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
+        <button onclick="closeNotification()">&times;</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Information</h3>
+                    <p>📧 Email: volunteer@college.edu</p>
+                    <p>📞 Phone: +1 (555) 123-4567</p>
+                    <p>📍 Address: 123 College Street, Education City</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="student-portal.html">Student Portal</a></li>
+                        <li><a href="login.html">Admin Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <p>Stay connected with our college community</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 College Volunteer Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
