@@ -181,43 +181,43 @@ function loadUpcomingEvents() {
         const isFull = volunteerStats.remaining === 0;
         
         return `
-        <div class="event-card">
-            <div class="event-header">
-                <div class="event-info">
-                    <h3 class="event-title">${event.name}</h3>
-                    <p class="event-time">${event.time}</p>
-                </div>
-                <div class="event-date-badge">${formatDate(event.date)}</div>
+        <div class="event-card-advanced">
+            <div class="event-card-header">
+                <div class="event-date-badge-large">${formatDate(event.date)}</div>
+                <div class="event-category-tag-advanced">${event.category}</div>
             </div>
             
-            <div class="event-body">
-                <p class="event-description">${event.description}</p>
+            <div class="event-card-content">
+                <h3 class="event-title-advanced">${event.name}</h3>
+                <p class="event-time-advanced">🕒 ${event.time}</p>
+                <p class="event-description-advanced">${event.description}</p>
             </div>
             
-            <div class="volunteer-section">
-                <div class="volunteer-counts">
+            <div class="volunteer-section-advanced">
+                <div class="volunteer-stats-row">
                     ${isFull ? 
-                        '<div class="volunteer-full-banner">🚫 VOLUNTEER POSITIONS FULL</div>' :
+                        '<div class="volunteer-full-status">🚫 All Positions Filled</div>' :
                         `
-                        <div class="volunteer-count-item selected">
-                            <span class="count-icon">👥</span>
-                            <span class="count-number">${volunteerStats.selected}</span>
-                            <span class="count-label">selected</span>
+                        <div class="volunteer-stat-item">
+                            <span class="stat-number">${volunteerStats.selected}</span>
+                            <span class="stat-label">Selected</span>
                         </div>
-                        <div class="volunteer-count-item remaining">
-                            <span class="count-icon">📋</span>
-                            <span class="count-number">${volunteerStats.remaining}</span>
-                            <span class="count-label">remaining</span>
+                        <div class="volunteer-stat-item">
+                            <span class="stat-number">${volunteerStats.remaining}</span>
+                            <span class="stat-label">Available</span>
+                        </div>
+                        <div class="volunteer-stat-item">
+                            <span class="stat-number">${volunteerStats.total}</span>
+                            <span class="stat-label">Total Needed</span>
                         </div>
                         `
                     }
                 </div>
             </div>
             
-            <div class="event-footer">
-                <div class="event-category-tag">${event.category}</div>
-                <a href="events.html" class="btn ${isFull ? 'btn-disabled' : 'btn-primary'}">
-                    ${isFull ? 'Positions Full' : 'Join as Volunteer'}
+            <div class="event-card-footer">
+                <a href="events.html" class="btn-card ${isFull ? 'btn-disabled-card' : 'btn-primary-card'}">
+                    ${isFull ? '❌ Positions Full' : '🚀 Apply Now'}
                 </a>
             </div>
         </div>
