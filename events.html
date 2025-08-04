@@ -37,11 +37,45 @@
         </div>
     </section>
 
+    <!-- Search and Filter Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-controls">
+                <div class="search-box">
+                    <input type="text" id="eventSearchInput" placeholder="🔍 Search events by name..." onkeyup="searchEvents()">
+                </div>
+                <div class="filter-controls">
+                    <select id="categoryFilter" onchange="filterEvents()">
+                        <option value="">All Categories</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Career">Career</option>
+                        <option value="Environment">Environment</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Social">Social</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <select id="statusFilter" onchange="filterEvents()">
+                        <option value="">All Events</option>
+                        <option value="available">Available</option>
+                        <option value="full">Full</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Events Grid -->
     <section class="events-section">
         <div class="container">
             <div class="events-grid" id="allEventsGrid">
                 <!-- Events will be dynamically loaded here -->
+            </div>
+            <div class="no-results" id="noResultsMessage" style="display: none;">
+                <div class="no-data-icon">🔍</div>
+                <h3>No Events Found</h3>
+                <p>Try adjusting your search criteria or check back later for new events.</p>
             </div>
         </div>
     </section>

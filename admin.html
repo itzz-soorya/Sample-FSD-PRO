@@ -34,6 +34,10 @@
         <div class="container">
             <div class="admin-header">
                 <h1>Admin Dashboard</h1>
+                <div class="admin-tabs">
+                    <button class="tab-btn active" onclick="showTab('events')">📋 Events Management</button>
+                    <button class="tab-btn" onclick="showTab('applications')">📝 Applications</button>
+                </div>
                 <div class="admin-actions">
                     <button class="btn btn-primary" onclick="openAddEventModal()">📝 Add Event</button>
                     <button class="btn btn-secondary" onclick="refreshApplications()">🔄 Refresh</button>
@@ -41,76 +45,117 @@
                 </div>
             </div>
 
-            <!-- Statistics Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">📋</div>
-                    <div class="stat-content">
-                        <h3 id="totalApplications">0</h3>
-                        <p>Total Applications</p>
+            <!-- Events Management Tab -->
+            <div class="tab-content" id="eventsTab">
+                <!-- Events Search -->
+                <div class="search-section-admin">
+                    <div class="search-box">
+                        <input type="text" id="adminEventSearchInput" placeholder="🔍 Search events by name..." onkeyup="searchAdminEvents()">
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
-                    <div class="stat-content">
-                        <h3 id="pendingApplications">0</h3>
-                        <p>Pending Review</p>
+                
+                <!-- Events Management Section -->
+                <div class="admin-table-container">
+                    <h2>Events Management</h2>
+                    <div class="events-admin-grid" id="eventsAdminGrid">
+                        <!-- Events will be dynamically loaded here -->
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">✅</div>
-                    <div class="stat-content">
-                        <h3 id="approvedApplications">0</h3>
-                        <p>Approved</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">❌</div>
-                    <div class="stat-content">
-                        <h3 id="rejectedApplications">0</h3>
-                        <p>Rejected</p>
+                    <div class="no-results" id="noEventResultsMessage" style="display: none;">
+                        <div class="no-data-icon">🔍</div>
+                        <h3>No Events Found</h3>
+                        <p>Try adjusting your search criteria.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Events Management Section -->
-            <div class="admin-table-container">
-                <h2>Events Management</h2>
-                <div class="events-admin-grid" id="eventsAdminGrid">
-                    <!-- Events will be dynamically loaded here -->
+            <!-- Applications Management Tab -->
+            <div class="tab-content" id="applicationsTab" style="display: none;">
+                <!-- Applications Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-content">
+                            <h3 id="totalApplicationsTab">0</h3>
+                            <p>Total Applications</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <h3 id="pendingApplicationsTab">0</h3>
+                            <p>Pending Review</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3 id="approvedApplicationsTab">0</h3>
+                            <p>Approved</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❌</div>
+                        <div class="stat-content">
+                            <h3 id="rejectedApplicationsTab">0</h3>
+                            <p>Rejected</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Applications Table -->
-            <div class="admin-table-container">
-                <h2>Volunteer Applications</h2>
-                <div class="table-responsive">
-                    <table class="admin-table" id="applicationsTable">
-                        <thead>
-                            <tr>
-                                <th>Application ID</th>
-                                <th>Name</th>
-                                <th>Roll No</th>
-                                <th>Department</th>
-                                <th>Email</th>
-                                <th>Event</th>
-                                <th>Status</th>
-                                <th>Applied Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="applicationsTableBody">
-                            <!-- Applications will be dynamically loaded here -->
-                        </tbody>
-                    </table>
+                <!-- Applications Table -->
+                <div class="admin-table-container">
+                    <h2>Volunteer Applications</h2>
+                    
+                    <!-- Applications Search -->
+                    <div class="search-section-admin">
+                        <div class="search-box">
+                            <input type="text" id="applicationSearchInput" placeholder="🔍 Search applications by name, roll no, or event..." onkeyup="searchApplications()">
+                        </div>
+                        <div class="filter-controls">
+                            <select id="applicationStatusFilter" onchange="filterApplications()">
+                                <option value="">All Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="admin-table" id="applicationsTable">
+                            <thead>
+                                <tr>
+                                    <th>Application ID</th>
+                                    <th>Name</th>
+                                    <th>Roll No</th>
+                                    <th>Department</th>
+                                    <th>Email</th>
+                                    <th>Event</th>
+                                    <th>Status</th>
+                                    <th>Applied Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applicationsTableBody">
+                                <!-- Applications will be dynamically loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
 
-            <!-- No Applications Message -->
-            <div class="no-data" id="noApplicationsMessage" style="display: none;">
-                <div class="no-data-icon">📝</div>
-                <h3>No Applications Yet</h3>
-                <p>When students apply for volunteer positions, they will appear here.</p>
+                <!-- No Applications Message -->
+                <div class="no-data" id="noApplicationsMessage" style="display: none;">
+                    <div class="no-data-icon">📝</div>
+                    <h3>No Applications Yet</h3>
+                    <p>When students apply for volunteer positions, they will appear here.</p>
+                </div>
+                
+                <!-- No Search Results Message -->
+                <div class="no-results" id="noApplicationResultsMessage" style="display: none;">
+                    <div class="no-data-icon">🔍</div>
+                    <h3>No Applications Found</h3>
+                    <p>Try adjusting your search criteria.</p>
+                </div>
             </div>
         </div>
     </section>

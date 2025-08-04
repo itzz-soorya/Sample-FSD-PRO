@@ -178,28 +178,46 @@ function loadUpcomingEvents() {
     
     upcomingEventsGrid.innerHTML = upcomingEvents.map(event => {
         const volunteerStats = getVolunteerStats(event.id);
+        const isFull = volunteerStats.remaining === 0;
+        
         return `
         <div class="event-card">
             <div class="event-header">
-                <div>
-                    <div class="event-title">${event.name}</div>
-                    <div class="event-time">${event.time}</div>
+                <div class="event-info">
+                    <h3 class="event-title">${event.name}</h3>
+                    <p class="event-time">${event.time}</p>
                 </div>
-                <div class="event-date">${formatDate(event.date)}</div>
+                <div class="event-date-badge">${formatDate(event.date)}</div>
             </div>
-            <div class="event-description">${event.description}</div>
-            <div class="volunteer-stats">
-                <div class="volunteer-count">
-                    ${volunteerStats.isFull ? 
-                        '<span class="volunteer-full">🎯 VOLUNTEER POSITIONS FULL</span>' :
-                        `<span class="volunteer-selected">👥 ${volunteerStats.selected} selected</span> | <span class="volunteer-remaining">📋 ${volunteerStats.remaining} remaining</span>`
+            
+            <div class="event-body">
+                <p class="event-description">${event.description}</p>
+            </div>
+            
+            <div class="volunteer-section">
+                <div class="volunteer-counts">
+                    ${isFull ? 
+                        '<div class="volunteer-full-banner">🚫 VOLUNTEER POSITIONS FULL</div>' :
+                        `
+                        <div class="volunteer-count-item selected">
+                            <span class="count-icon">👥</span>
+                            <span class="count-number">${volunteerStats.selected}</span>
+                            <span class="count-label">selected</span>
+                        </div>
+                        <div class="volunteer-count-item remaining">
+                            <span class="count-icon">📋</span>
+                            <span class="count-number">${volunteerStats.remaining}</span>
+                            <span class="count-label">remaining</span>
+                        </div>
+                        `
                     }
                 </div>
             </div>
+            
             <div class="event-footer">
-                <div class="event-category">${event.category}</div>
-                <a href="events.html" class="btn btn-primary ${volunteerStats.isFull ? 'btn-disabled' : ''}">
-                    ${volunteerStats.isFull ? 'Positions Full' : 'Join as Volunteer'}
+                <div class="event-category-tag">${event.category}</div>
+                <a href="events.html" class="btn ${isFull ? 'btn-disabled' : 'btn-primary'}">
+                    ${isFull ? 'Positions Full' : 'Join as Volunteer'}
                 </a>
             </div>
         </div>
@@ -219,30 +237,48 @@ function loadAllEvents() {
     
     allEventsGrid.innerHTML = events.map(event => {
         const volunteerStats = getVolunteerStats(event.id);
+        const isFull = volunteerStats.remaining === 0;
+        
         return `
         <div class="event-card">
             <div class="event-header">
-                <div>
-                    <div class="event-title">${event.name}</div>
-                    <div class="event-time">${event.time}</div>
+                <div class="event-info">
+                    <h3 class="event-title">${event.name}</h3>
+                    <p class="event-time">${event.time}</p>
                 </div>
-                <div class="event-date">${formatDate(event.date)}</div>
+                <div class="event-date-badge">${formatDate(event.date)}</div>
             </div>
-            <div class="event-description">${event.description}</div>
-            <div class="volunteer-stats">
-                <div class="volunteer-count">
-                    ${volunteerStats.isFull ? 
-                        '<span class="volunteer-full">🎯 VOLUNTEER POSITIONS FULL</span>' :
-                        `<span class="volunteer-selected">👥 ${volunteerStats.selected} selected</span> | <span class="volunteer-remaining">📋 ${volunteerStats.remaining} remaining</span>`
+            
+            <div class="event-body">
+                <p class="event-description">${event.description}</p>
+            </div>
+            
+            <div class="volunteer-section">
+                <div class="volunteer-counts">
+                    ${isFull ? 
+                        '<div class="volunteer-full-banner">🚫 VOLUNTEER POSITIONS FULL</div>' :
+                        `
+                        <div class="volunteer-count-item selected">
+                            <span class="count-icon">👥</span>
+                            <span class="count-number">${volunteerStats.selected}</span>
+                            <span class="count-label">selected</span>
+                        </div>
+                        <div class="volunteer-count-item remaining">
+                            <span class="count-icon">📋</span>
+                            <span class="count-number">${volunteerStats.remaining}</span>
+                            <span class="count-label">remaining</span>
+                        </div>
+                        `
                     }
                 </div>
             </div>
+            
             <div class="event-footer">
-                <div class="event-category">${event.category}</div>
-                <button class="btn btn-primary ${volunteerStats.isFull ? 'btn-disabled' : ''}" 
-                        onclick="openVolunteerModal(${event.id})" 
-                        ${volunteerStats.isFull ? 'disabled' : ''}>
-                    ${volunteerStats.isFull ? 'Positions Full' : 'Request to Volunteer'}
+                <div class="event-category-tag">${event.category}</div>
+                <button class="btn ${isFull ? 'btn-disabled' : 'btn-primary'}" 
+                        onclick="${isFull ? '' : `openVolunteerModal(${event.id})`}" 
+                        ${isFull ? 'disabled' : ''}>
+                    ${isFull ? 'Positions Full' : 'Request to Volunteer'}
                 </button>
             </div>
         </div>
@@ -391,6 +427,76 @@ function loadAdminDashboard() {
     updateStatistics();
     loadApplicationsTable();
     loadEventsManagement();
+    // Default to events tab
+    showTab('events');
+}
+
+// Show tab function for admin dashboard
+function showTab(tabName) {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(tab => {
+        tab.style.display = 'none';
+    });
+    
+    // Remove active class from all tab buttons
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab content
+    const selectedTab = document.getElementById(tabName + 'Tab');
+    if (selectedTab) {
+        selectedTab.style.display = 'block';
+    }
+    
+    // Add active class to clicked button
+    if (event && event.target) {
+        event.target.classList.add('active');
+    } else {
+        // Fallback for default tab
+        const defaultButton = document.querySelector(`[onclick="showTab('${tabName}')"]`);
+        if (defaultButton) {
+            defaultButton.classList.add('active');
+        }
+    }
+    
+    // Update statistics for applications tab
+    if (tabName === 'applications') {
+        updateApplicationTabStatistics();
+        // Small delay to ensure content is visible before loading
+        setTimeout(() => {
+            loadApplicationsTable();
+        }, 100);
+    } else if (tabName === 'events') {
+        // Reload events when switching to events tab
+        setTimeout(() => {
+            loadEventsManagement();
+        }, 100);
+    }
+}
+
+// Update statistics for applications tab
+function updateApplicationTabStatistics() {
+    const totalElement = document.getElementById('totalApplicationsTab');
+    const pendingElement = document.getElementById('pendingApplicationsTab');
+    const approvedElement = document.getElementById('approvedApplicationsTab');
+    const rejectedElement = document.getElementById('rejectedApplicationsTab');
+    
+    if (!totalElement) return;
+    
+    const stats = {
+        total: volunteerApplications.length,
+        pending: volunteerApplications.filter(app => app.status === 'Pending').length,
+        approved: volunteerApplications.filter(app => app.status === 'Approved').length,
+        rejected: volunteerApplications.filter(app => app.status === 'Rejected').length
+    };
+    
+    totalElement.textContent = stats.total;
+    pendingElement.textContent = stats.pending;
+    approvedElement.textContent = stats.approved;
+    rejectedElement.textContent = stats.rejected;
 }
 
 // Update dashboard statistics
@@ -446,10 +552,10 @@ function loadApplicationsTable() {
             <td>${formatDate(app.appliedDate.split('T')[0])}</td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn btn-sm btn-secondary" onclick="viewApplication(${app.id})">View</button>
+                    <button class="btn btn-sm btn-secondary" onclick="viewApplication(${app.id})">📄 Details</button>
                     ${app.status === 'Pending' ? `
-                        <button class="btn btn-sm btn-success" onclick="approveApplication(${app.id})">Approve</button>
-                        <button class="btn btn-sm btn-danger" onclick="rejectApplication(${app.id})">Reject</button>
+                        <button class="btn btn-sm btn-success" onclick="approveApplication(${app.id})">✅ Approve</button>
+                        <button class="btn btn-sm btn-danger" onclick="rejectApplication(${app.id})">❌ Reject</button>
                     ` : ''}
                 </div>
             </td>
@@ -735,18 +841,36 @@ function updateAddEventForm() {
 
 // View application details
 function viewApplication(applicationId) {
+    console.log('Viewing application with ID:', applicationId);
+    
     const application = volunteerApplications.find(app => app.id === applicationId);
-    if (!application) return;
+    if (!application) {
+        console.error('Application not found:', applicationId);
+        showNotification('Application not found!', 'error');
+        return;
+    }
+    
+    console.log('Found application:', application);
     
     const modal = document.getElementById('applicationModal');
     const detailsContainer = document.getElementById('applicationDetails');
     
-    if (!modal || !detailsContainer) return;
+    if (!modal) {
+        console.error('Application modal not found');
+        showNotification('Modal not found!', 'error');
+        return;
+    }
+    
+    if (!detailsContainer) {
+        console.error('Application details container not found');
+        showNotification('Details container not found!', 'error');
+        return;
+    }
     
     detailsContainer.innerHTML = `
-        <div class="application-details">
+        <div class="application-details modal-details">
             <div class="detail-group">
-                <h3>Personal Information</h3>
+                <h3>📋 Personal Information</h3>
                 <p><strong>Name:</strong> ${application.name}</p>
                 <p><strong>Roll Number:</strong> ${application.rollNo}</p>
                 <p><strong>Department:</strong> ${application.department}</p>
@@ -754,14 +878,14 @@ function viewApplication(applicationId) {
             </div>
             
             <div class="detail-group">
-                <h3>Event Information</h3>
+                <h3>🎯 Event Information</h3>
                 <p><strong>Event:</strong> ${application.eventName}</p>
                 <p><strong>Applied Date:</strong> ${formatDate(application.appliedDate.split('T')[0])}</p>
                 <p><strong>Status:</strong> <span class="status-badge status-${application.status.toLowerCase()}">${application.status}</span></p>
             </div>
             
             <div class="detail-group">
-                <h3>Additional Information</h3>
+                <h3>ℹ️ Additional Information</h3>
                 <p><strong>Availability:</strong> ${application.availability}</p>
                 <p><strong>Skills & Experience:</strong> ${application.skills}</p>
                 <p><strong>Motivation:</strong> ${application.motivation}</p>
@@ -769,8 +893,8 @@ function viewApplication(applicationId) {
             
             ${application.status === 'Pending' ? `
                 <div class="detail-actions">
-                    <button class="btn btn-success" onclick="approveApplication(${application.id}); closeApplicationModal();">Approve</button>
-                    <button class="btn btn-danger" onclick="rejectApplication(${application.id}); closeApplicationModal();">Reject</button>
+                    <button class="btn btn-success" onclick="approveApplication(${application.id}); closeApplicationModal();">✅ Approve Application</button>
+                    <button class="btn btn-danger" onclick="rejectApplication(${application.id}); closeApplicationModal();">❌ Reject Application</button>
                 </div>
             ` : ''}
         </div>
@@ -778,14 +902,19 @@ function viewApplication(applicationId) {
     
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
+    console.log('Modal opened successfully');
 }
 
 // Close application modal
 function closeApplicationModal() {
+    console.log('Closing application modal');
     const modal = document.getElementById('applicationModal');
     if (modal) {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
+        console.log('Application modal closed');
+    } else {
+        console.error('Application modal not found when trying to close');
     }
 }
 
@@ -1322,4 +1451,207 @@ function logoutStudent() {
     // Clear form
     const emailInput = document.getElementById('studentEmail');
     if (emailInput) emailInput.value = '';
+}
+
+// Search and Filter Functions
+
+// Search events on events page (student side)
+function searchEvents() {
+    const searchTerm = document.getElementById('eventSearchInput').value.toLowerCase();
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    
+    const filteredEvents = events.filter(event => {
+        const matchesSearch = event.name.toLowerCase().includes(searchTerm) || 
+                             event.description.toLowerCase().includes(searchTerm);
+        const matchesCategory = !categoryFilter || event.category === categoryFilter;
+        
+        let matchesStatus = true;
+        if (statusFilter) {
+            const stats = getVolunteerStats(event.id);
+            if (statusFilter === 'available') {
+                matchesStatus = stats.remaining > 0;
+            } else if (statusFilter === 'full') {
+                matchesStatus = stats.remaining === 0;
+            }
+        }
+        
+        return matchesSearch && matchesCategory && matchesStatus;
+    });
+    
+    displayFilteredEvents(filteredEvents);
+}
+
+// Filter events (called by category/status filters)
+function filterEvents() {
+    searchEvents(); // Reuse search logic with filters
+}
+
+// Display filtered events
+function displayFilteredEvents(filteredEvents) {
+    const container = document.getElementById('allEventsGrid');
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    
+    if (!container) return;
+    
+    if (filteredEvents.length === 0) {
+        container.style.display = 'none';
+        if (noResultsMessage) noResultsMessage.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'grid';
+    if (noResultsMessage) noResultsMessage.style.display = 'none';
+    
+    container.innerHTML = filteredEvents.map(event => {
+        const stats = getVolunteerStats(event.id);
+        const isFull = stats.remaining === 0;
+        
+        return `
+            <div class="event-card">
+                <div class="event-category">${event.category}</div>
+                <h3>${event.name}</h3>
+                <div class="event-meta">
+                    <span>📅 ${formatDate(event.date)}</span>
+                    <span>⏰ ${event.time}</span>
+                </div>
+                <p class="event-description">${event.description}</p>
+                <div class="volunteer-stats ${isFull ? 'volunteer-full' : ''}">
+                    ${isFull ? 
+                        '<span class="full-text">🚫 VOLUNTEER POSITIONS FULL</span>' : 
+                        `<span>👥 ${stats.selected} selected, ${stats.remaining} remaining</span>`
+                    }
+                </div>
+                <div class="event-actions">
+                    <button class="btn ${isFull ? 'btn-disabled' : 'btn-primary'}" 
+                            onclick="${isFull ? '' : `openVolunteerModal(${event.id})`}"
+                            ${isFull ? 'disabled' : ''}>
+                        ${isFull ? 'Full' : 'Apply Now'}
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Search admin events
+function searchAdminEvents() {
+    const searchTerm = document.getElementById('adminEventSearchInput').value.toLowerCase();
+    
+    const filteredEvents = events.filter(event => {
+        return event.name.toLowerCase().includes(searchTerm) || 
+               event.description.toLowerCase().includes(searchTerm) ||
+               event.category.toLowerCase().includes(searchTerm);
+    });
+    
+    displayFilteredAdminEvents(filteredEvents);
+}
+
+// Display filtered admin events
+function displayFilteredAdminEvents(filteredEvents) {
+    const container = document.getElementById('eventsAdminGrid');
+    const noResultsMessage = document.getElementById('noEventResultsMessage');
+    
+    if (!container) return;
+    
+    if (filteredEvents.length === 0) {
+        container.style.display = 'none';
+        if (noResultsMessage) noResultsMessage.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'grid';
+    if (noResultsMessage) noResultsMessage.style.display = 'none';
+    
+    container.innerHTML = filteredEvents.map(event => {
+        const stats = getVolunteerStats(event.id);
+        return `
+            <div class="event-admin-card">
+                <div class="event-admin-header">
+                    <h3>${event.name}</h3>
+                    <span class="event-category-badge">${event.category}</span>
+                </div>
+                <div class="event-admin-details">
+                    <p><strong>📅 Date:</strong> ${formatDate(event.date)}</p>
+                    <p><strong>⏰ Time:</strong> ${event.time}</p>
+                    <p><strong>📝 Description:</strong> ${event.description}</p>
+                    <div class="volunteer-stats">
+                        <span>👥 ${stats.selected}/${event.volunteersNeeded} volunteers</span>
+                        <span class="${stats.remaining === 0 ? 'volunteer-full' : ''}">
+                            ${stats.remaining === 0 ? '🚫 Full' : `${stats.remaining} remaining`}
+                        </span>
+                    </div>
+                </div>
+                <div class="event-admin-actions">
+                    <button class="btn btn-danger btn-sm" onclick="deleteEvent(${event.id})">🗑️ Delete</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Search applications
+function searchApplications() {
+    const searchTerm = document.getElementById('applicationSearchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('applicationStatusFilter').value;
+    
+    const filteredApplications = volunteerApplications.filter(app => {
+        const matchesSearch = app.name.toLowerCase().includes(searchTerm) || 
+                             app.rollNo.toLowerCase().includes(searchTerm) ||
+                             app.eventName.toLowerCase().includes(searchTerm) ||
+                             app.email.toLowerCase().includes(searchTerm) ||
+                             app.department.toLowerCase().includes(searchTerm);
+        const matchesStatus = !statusFilter || app.status === statusFilter;
+        
+        return matchesSearch && matchesStatus;
+    });
+    
+    displayFilteredApplications(filteredApplications);
+}
+
+// Filter applications by status
+function filterApplications() {
+    searchApplications(); // Reuse search logic with status filter
+}
+
+// Display filtered applications
+function displayFilteredApplications(filteredApplications) {
+    const tableBody = document.getElementById('applicationsTableBody');
+    const noApplicationsMessage = document.getElementById('noApplicationsMessage');
+    const noResultsMessage = document.getElementById('noApplicationResultsMessage');
+    const table = document.getElementById('applicationsTable');
+    
+    if (!tableBody) return;
+    
+    if (filteredApplications.length === 0) {
+        table.style.display = 'none';
+        noApplicationsMessage.style.display = 'none';
+        if (noResultsMessage) noResultsMessage.style.display = 'block';
+        return;
+    }
+    
+    table.style.display = 'table';
+    noApplicationsMessage.style.display = 'none';
+    if (noResultsMessage) noResultsMessage.style.display = 'none';
+    
+    tableBody.innerHTML = filteredApplications.map(app => `
+        <tr>
+            <td>${app.id}</td>
+            <td>${app.name}</td>
+            <td>${app.rollNo}</td>
+            <td>${app.department}</td>
+            <td>${app.email}</td>
+            <td>${app.eventName}</td>
+            <td><span class="status-badge status-${app.status.toLowerCase()}">${app.status}</span></td>
+            <td>${formatDate(app.appliedDate)}</td>
+            <td class="actions">
+                ${app.status === 'Pending' ? `
+                    <button class="btn btn-success btn-sm" onclick="updateApplicationStatus(${app.id}, 'Approved')">✅ Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="updateApplicationStatus(${app.id}, 'Rejected')">❌ Reject</button>
+                ` : `
+                    <button class="btn btn-info btn-sm" onclick="showApplicationDetails(${app.id})">👁️ View</button>
+                `}
+            </td>
+        </tr>
+    `).join('');
 }
