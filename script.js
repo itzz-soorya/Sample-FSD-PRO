@@ -176,7 +176,9 @@ function loadUpcomingEvents() {
         return;
     }
     
-    upcomingEventsGrid.innerHTML = upcomingEvents.map(event => `
+    upcomingEventsGrid.innerHTML = upcomingEvents.map(event => {
+        const volunteerStats = getVolunteerStats(event.id);
+        return `
         <div class="event-card">
             <div class="event-header">
                 <div>
@@ -186,12 +188,23 @@ function loadUpcomingEvents() {
                 <div class="event-date">${formatDate(event.date)}</div>
             </div>
             <div class="event-description">${event.description}</div>
+            <div class="volunteer-stats">
+                <div class="volunteer-count">
+                    ${volunteerStats.isFull ? 
+                        '<span class="volunteer-full">🎯 VOLUNTEER POSITIONS FULL</span>' :
+                        `<span class="volunteer-selected">👥 ${volunteerStats.selected} selected</span> | <span class="volunteer-remaining">📋 ${volunteerStats.remaining} remaining</span>`
+                    }
+                </div>
+            </div>
             <div class="event-footer">
                 <div class="event-category">${event.category}</div>
-                <a href="events.html" class="btn btn-primary">Join as Volunteer</a>
+                <a href="events.html" class="btn btn-primary ${volunteerStats.isFull ? 'btn-disabled' : ''}">
+                    ${volunteerStats.isFull ? 'Positions Full' : 'Join as Volunteer'}
+                </a>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Load all events for events page
@@ -204,7 +217,9 @@ function loadAllEvents() {
         return;
     }
     
-    allEventsGrid.innerHTML = events.map(event => `
+    allEventsGrid.innerHTML = events.map(event => {
+        const volunteerStats = getVolunteerStats(event.id);
+        return `
         <div class="event-card">
             <div class="event-header">
                 <div>
@@ -214,12 +229,25 @@ function loadAllEvents() {
                 <div class="event-date">${formatDate(event.date)}</div>
             </div>
             <div class="event-description">${event.description}</div>
+            <div class="volunteer-stats">
+                <div class="volunteer-count">
+                    ${volunteerStats.isFull ? 
+                        '<span class="volunteer-full">🎯 VOLUNTEER POSITIONS FULL</span>' :
+                        `<span class="volunteer-selected">👥 ${volunteerStats.selected} selected</span> | <span class="volunteer-remaining">📋 ${volunteerStats.remaining} remaining</span>`
+                    }
+                </div>
+            </div>
             <div class="event-footer">
                 <div class="event-category">${event.category}</div>
-                <button class="btn btn-primary" onclick="openVolunteerModal(${event.id})">Request to Volunteer</button>
+                <button class="btn btn-primary ${volunteerStats.isFull ? 'btn-disabled' : ''}" 
+                        onclick="openVolunteerModal(${event.id})" 
+                        ${volunteerStats.isFull ? 'disabled' : ''}>
+                    ${volunteerStats.isFull ? 'Positions Full' : 'Request to Volunteer'}
+                </button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Format date for display
@@ -275,6 +303,14 @@ function setupVolunteerForm() {
             return;
         }
         
+        // Check if event is full
+        const volunteerStats = getVolunteerStats(eventId);
+        if (volunteerStats.isFull) {
+            showNotification('Sorry, all volunteer positions for this event are already filled!', 'warning');
+            closeModal();
+            return;
+        }
+        
         // Create application object
         const application = {
             id: Date.now(),
@@ -293,11 +329,11 @@ function setupVolunteerForm() {
         };
         
         // Check if already applied
-        const existingApplication = volunteerApplications.find(
+        const existingApplication = volunteerApplications.filter(
             app => app.email === application.email && app.eventId === eventId
         );
         
-        if (existingApplication) {
+        if (existingApplication.length > 0) {
             showNotification('You have already applied for this event!', 'warning');
             return;
         }
@@ -305,6 +341,11 @@ function setupVolunteerForm() {
         // Add to applications
         volunteerApplications.push(application);
         saveApplications();
+        
+        // Refresh event displays to update volunteer counts
+        loadAllEvents();
+        loadUpcomingEvents();
+        loadEventsManagement();
         
         // Close modal and show success message
         closeModal();
@@ -428,7 +469,9 @@ function loadEventsManagement() {
         return;
     }
     
-    eventsGrid.innerHTML = events.map(event => `
+    eventsGrid.innerHTML = events.map(event => {
+        const volunteerStats = getVolunteerStats(event.id);
+        return `
         <div class="event-admin-card">
             <div class="event-admin-header">
                 <div>
@@ -438,6 +481,12 @@ function loadEventsManagement() {
                         <p><strong>🕒 Time:</strong> ${event.time}</p>
                         <p><strong>📍 Category:</strong> ${event.category}</p>
                         <p><strong>👥 Volunteers Needed:</strong> ${event.volunteersNeeded}</p>
+                        <p><strong>📊 Volunteer Status:</strong> 
+                            ${volunteerStats.isFull ? 
+                                '<span class="volunteer-full">🎯 FULL</span>' :
+                                `<span class="volunteer-progress">${volunteerStats.selected}/${volunteerStats.total} (${volunteerStats.remaining} remaining)</span>`
+                            }
+                        </p>
                     </div>
                 </div>
                 <div class="event-admin-date">
@@ -461,12 +510,34 @@ function loadEventsManagement() {
                 </div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Get applications count for an event
 function getEventApplicationsCount(eventId) {
     return volunteerApplications.filter(app => app.eventId === eventId).length;
+}
+
+// Get volunteer statistics for an event
+function getVolunteerStats(eventId) {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return { selected: 0, remaining: 0, total: 0, isFull: false };
+    
+    const selectedVolunteers = volunteerApplications.filter(
+        app => app.eventId === eventId && app.status === 'Approved'
+    ).length;
+    
+    const totalNeeded = event.volunteersNeeded;
+    const remaining = Math.max(0, totalNeeded - selectedVolunteers);
+    const isFull = selectedVolunteers >= totalNeeded;
+    
+    return {
+        selected: selectedVolunteers,
+        remaining: remaining,
+        total: totalNeeded,
+        isFull: isFull
+    };
 }
 
 // Open add event modal
@@ -723,6 +794,13 @@ function approveApplication(applicationId) {
     const application = volunteerApplications.find(app => app.id === applicationId);
     if (!application) return;
     
+    // Check if event is already full before approving
+    const volunteerStats = getVolunteerStats(application.eventId);
+    if (volunteerStats.isFull) {
+        showNotification('Cannot approve - all volunteer positions for this event are already filled!', 'warning');
+        return;
+    }
+    
     application.status = 'Approved';
     application.statusChangeDate = new Date().toISOString();
     application.studentNotified = false; // Will trigger notification
@@ -730,6 +808,9 @@ function approveApplication(applicationId) {
     saveApplications();
     updateStatistics();
     loadApplicationsTable();
+    loadEventsManagement(); // Refresh volunteer counts in admin
+    loadAllEvents(); // Refresh volunteer counts in events page
+    loadUpcomingEvents(); // Refresh volunteer counts in home page
     
     showNotification(`Application for ${application.name} has been approved!`, 'success');
     
@@ -749,6 +830,9 @@ function rejectApplication(applicationId) {
     saveApplications();
     updateStatistics();
     loadApplicationsTable();
+    loadEventsManagement(); // Refresh volunteer counts in admin
+    loadAllEvents(); // Refresh volunteer counts in events page
+    loadUpcomingEvents(); // Refresh volunteer counts in home page
     
     showNotification(`Application for ${application.name} has been rejected.`, 'warning');
     

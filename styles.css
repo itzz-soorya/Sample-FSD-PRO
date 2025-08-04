@@ -849,94 +849,166 @@ body {
 /* Events Management Styles */
 .events-admin-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
 }
 
 .event-admin-card {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 10px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e0e0e0;
 }
 
 .event-admin-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .event-admin-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
 }
 
 .event-admin-title {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.event-admin-date {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    margin-bottom: 1rem;
 }
 
 .event-admin-details {
-    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
 }
 
 .event-admin-details p {
-    margin-bottom: 0.5rem;
-    color: #666;
-    font-size: 0.9rem;
+    margin: 0.3rem 0;
 }
 
-.event-admin-description {
-    color: #555;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-}
-
-.event-admin-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.event-admin-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+.event-admin-date {
+    text-align: right;
 }
 
 .event-status-active {
-    background: #d4edda;
-    color: #155724;
-    padding: 0.2rem 0.6rem;
-    border-radius: 12px;
+    background: #28a745;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
 }
 
 .event-status-inactive {
-    background: #f8d7da;
-    color: #721c24;
-    padding: 0.2rem 0.6rem;
-    border-radius: 12px;
+    background: #dc3545;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
+}
+
+.event-admin-description {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #555;
+    border-bottom: 1px solid #eee;
+}
+
+.event-admin-footer {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+}
+
+.event-admin-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.volunteers-count {
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+}
+
+/* Volunteer Statistics Styles */
+.volunteer-stats {
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.volunteer-count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.volunteer-selected {
+    color: #28a745;
+    background: #d4edda;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+}
+
+.volunteer-remaining {
+    color: #ffc107;
+    background: #fff3cd;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+}
+
+.volunteer-full {
+    color: #dc3545;
+    background: #f8d7da;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    animation: pulse 2s infinite;
+}
+
+.volunteer-progress {
+    color: #007bff;
+    background: #cce7ff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+}
+
+.btn-disabled {
+    background: #6c757d !important;
+    border-color: #6c757d !important;
+    cursor: not-allowed !important;
+    opacity: 0.65;
+}
+
+.btn-disabled:hover {
+    background: #6c757d !important;
+    transform: none !important;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 /* Notification Styles */
